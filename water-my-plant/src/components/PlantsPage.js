@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 // import axios from "axios";
 
-// import ColorList from "./ColorList";
+import PlantList from "./PlantList";
 import { fetchApi } from "./fetchApi";
 
 const PlantsPage = () => {
   const [plantList, setPlantList] = useState([]);
 
   useEffect(() => {
-    fetchApi().then((res) =>
+    fetchApi().then((res) => {
+      console.log(res.data);
       setPlantList(
         res.map((plant) => {
           if (plant.id === res.id) {
@@ -17,14 +18,13 @@ const PlantsPage = () => {
             return plant;
           }
         })
-      )
-    );
+      );
+    });
   }, []);
 
   return (
     <>
-      {/* <ColorList colors={colorList} updateColors={setColorList} />
-       */}
+      <PlantList plants={plantList} updatePlants={setPlantList} />
     </>
   );
 };

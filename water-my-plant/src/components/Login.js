@@ -12,7 +12,8 @@ const Login = (props) => {
 
   const hahdleSubmit = (e) => {
     e.preventDefault();
-    axios
+    // axios
+    AxiosWithAuth()
       .post(
         "https://cking-watermyplants.herokuapp.com/login",
         `grant_type=password&username=${form.username}&password=${form.password}`,
@@ -25,7 +26,7 @@ const Login = (props) => {
         }
       )
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         localStorage.setItem("token", res.data.access_token);
         props.history.push("/plants");
       });
