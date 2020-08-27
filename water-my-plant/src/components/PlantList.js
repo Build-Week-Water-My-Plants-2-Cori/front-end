@@ -9,7 +9,7 @@ import AxiosWithAuth from "./AxiosWithAuth";
 // photo  string 	No 	No 	Plants Picture or Location
 
 const initialPlant = {
-  id: "",
+  plantid: "",
   nickname: "",
   species: "",
   h2oFrequency: "",
@@ -17,7 +17,7 @@ const initialPlant = {
 };
 
 const PlantList = ({ plants, updatePlants }) => {
-  // console.log(plants);
+  console.log("plants:", plants);
   const [editing, setEditing] = useState(false);
   const [plantToEdit, setPlantToEdit] = useState(initialPlant);
 
@@ -30,12 +30,15 @@ const PlantList = ({ plants, updatePlants }) => {
     e.preventDefault();
 
     AxiosWithAuth()
-      .put(`/api/plants/${plantToEdit.id}`, plantToEdit)
+      .put(
+        `https://cking-watermyplants.herokuapp.com/plants/plants/${plantToEdit.plantid}`,
+        plantToEdit
+      )
       .then((res) => {
         // console.log("SaveEdit res:", res.data);
         updatePlants(
           plants.map((plant) => {
-            if (plant.id === plantToEdit.id) {
+            if (plant.plantid === plantToEdit.plantid) {
               return res.data;
             } else return plant;
           })
@@ -46,12 +49,14 @@ const PlantList = ({ plants, updatePlants }) => {
 
   const deletePlant = (plant) => {
     AxiosWithAuth()
-      .delete(`api/plants/${plant.id}`)
+      .delete(
+        `https://cking-watermyplants.herokuapp.com/plants/${plant.plantid}`
+      )
       .then((res) => {
         // console.log("deletePlant res:", res.data);
         updatePlants(
           plants.filter((item) => {
-            return item.id !== plant.id;
+            return item.plantid !== plant.plantid;
           })
         );
       })

@@ -9,10 +9,10 @@ const PlantsPage = () => {
 
   useEffect(() => {
     fetchApi().then((res) => {
-      console.log(res.data);
+      console.log(res);
       setPlantList(
         res.map((plant) => {
-          if (plant.id === res.id) {
+          if (plant.plantid === res.plantid) {
             return res;
           } else {
             return plant;
