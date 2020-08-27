@@ -90,119 +90,76 @@ import * as yup from "yup";
 import formschema from "./formSchema";
 
 const LogInFormStyle = styled.div`
-  background-color: #1b4332;
+  background-color: #2d6a4f;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 3%;
-  font-size: 1.5rem;
-  font-family: "Playfair Display", serif;
+  font-size: 1.9rem;
   color: #fefae0;
-  margin: 1% auto;
-  height: 55vh;
+  width: 60%;
+  margin: 0.9% auto;
+  height: 70vh;
   border-radius: 20px;
-  width: 45%;
   * {
     text-decoration: none;
   }
   h1 {
-    font-password: 4rem;
+    font-size: 3rem;
     color: #fefae0;
-    letter-spacing: 1.3rem;
-    font-family: "Playfair Display", serif;
-    h2 {
-      color: white;
-      font-size: 1.7rem;
-    }
-    h3 {
-      font-size: 1.8rem;
-    }
+    font-weight: lighter;
+  }
+  h2 {
+    color: #d8f3dc;
+    font-size: 1.7rem;
+    font-weight: lighter;
+  }
+  h3 {
+    font-size: 1.8rem;
+    font-weight: lighter;
+  }
+  input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  button {
+    width: 100%;
+    background-color: #1b4332;
+    font-size: 1.5rem;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #b7e4c7;
+    color: black;
   }
 `;
+
+
 export default function LogInForm(props) {
   const { values, submit, inputChange, disabled, errors } = props;
 
-  const initialLogInFormValues = {
-    username: "",
-    phonenumber: "",
-    password: "",
-  };
-
-  const initialLogInFormErrors = {
-    username: "",
-    phonenumber: "",
-    password: "",
-  };
-
-  const initialLogUsers = [];
-  const initialLogDisabled = true;
-
-  const [logUsers, setLogUsers] = useState(initialLogUsers);
-  const [logFormValues, setLogFormValues] = useState(initialLogInFormValues);
-  const [logFormErrors, setLogFormErrors] = useState(initialLogInFormErrors);
-  const [logDisabled, setLogDisabled] = useState(initialLogDisabled);
-
-  const postNewLogUser = (newLogUser) => {
-    axios
-      .post("http://localhost:3000/login", newLogUser)
-      .then((res) => {
-        setLogUsers([res.data, ...logUsers]);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLogFormValues(initialLogInFormValues);
-      });
-  };
-
-  const inputlogChange = (name, value) => {
-    yup
-      .reach(formschema, name)
-      .validate(value)
-      .then((valid) => {
-        setLogFormErrors({
-          ...logFormErrors,
-          [name]: " ",
-        });
-      })
-      .catch((err) => {
-        setLogFormErrors({
-          ...logFormErrors,
-          [name]: err.errors[0],
-        });
-      });
-    setLogFormValues({
-      ...logFormValues,
-      [name]: value,
-    });
-  };
-
-  const submitLog = () => {
-    const newLogUser = {
-      username: logFormValues.username.trim(),
-      phonenumber: logFormValues.phonenumber.trim(),
-      password: logFormValues.password.trim(),
-    };
-    postNewLogUser(newLogUser);
-  };
-
-  useEffect(() => {
-    formschema.isValid(logFormValues).then((valid) => {
-      setLogDisabled(!valid);
-    });
-  }, [logFormValues]);
-
+ const onInputChange = (evt) => {
+   const {name, value} = evt.target
+   inputChange(name, value)
+ }
+ 
   const onSubmit = (evt) => {
     evt.preventDefault();
-    submitLog();
+    submit();
   };
 
-  const onInputChange = (evt) => {
-    const { name, value } = evt.target;
-    inputChange(name, value);
-  };
+  
 
   return (
     <LogInFormStyle>
@@ -230,7 +187,7 @@ export default function LogInForm(props) {
           />
         </label>
         <label>
-          <h3>Pass word</h3>
+          <h3>Password</h3>
           <input
             value={values.password}
             onChange={onInputChange}
@@ -238,11 +195,14 @@ export default function LogInForm(props) {
             type="password"
           />
         </label>
-        <button logDisabled={disabled} submit={submit}>
+        <button disabled={disabled} submit={submit}>
           Submit
         </button>
         <Link to="/signupform">
-          <h3>Sign Up</h3>
+          <h2>Sign Up</h2>
+        </Link>
+        <Link to="/data">
+          <h2>Data</h2>
         </Link>
       </form>
     </LogInFormStyle>

@@ -98,110 +98,69 @@ const SignUpFormStyle = styled.div`
   align-items: center;
   justify-content: center;
   padding: 3%;
-  font-password: 1.8rem;
-  font-family: "Playfair Display", serif;
+  font-size: 1.9rem;
   color: #fefae0;
-  width: 45%;
-  margin: 1% auto;
-  height: 55vh;
+  width: 60%;
+  margin: 0.9% auto;
+  height: 70vh;
   border-radius: 20px;
   * {
     text-decoration: none;
   }
   h1 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     color: #fefae0;
-    font-family: "Playfair Display", serif;
-    letter-spacing: 0.5rem;
+    font-weight: lighter;
   }
   h2 {
     color: #d8f3dc;
     font-size: 1.7rem;
+    font-weight: lighter;
   }
   h3 {
     font-size: 1.8rem;
+    font-weight: lighter;
+  }
+  input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  button{
+    width: 100%;
+    background-color: #1b4332;
+    font-size: 1.5rem;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover{
+    background-color: #b7e4c7;
+    color:black;
   }
 `;
-const initialSignUpFormValues = {
-  username: "",
-  phonenumber: "",
-  password: "",
-};
-const initialSignUpFormErrors = {
-  username: "",
-  phonenumber: "",
-  password: "",
-};
-const initialSignUsers = [];
-const initialDisabled = true;
+
 
 export default function SignUpForm(props) {
   const { values, submit, inputChange, disabled, errors } = props;
-  const [signUsers, setSignUsers] = useState(initialSignUsers);
-  const [signFormValues, setSignFormValues] = useState(initialSignUpFormValues);
-  const [signFormErrors, setSignFormErrors] = useState(initialSignUpFormErrors);
-  const [signDisabled, setSignDisabled] = useState(initialDisabled);
 
-  const postNewSignUser = (newSignUser) => {
-    axios
-      .post("http://localhost:3000/singup", newSignUser)
-      .then((res) => {
-        setSignUsers([res.data, ...signUsers]);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setSignFormValues(initialSignUpFormValues);
-      });
-  };
-
-  const inputSignChange = (name, value) => {
-    yup
-      .reach(formschema, name)
-      .validate(value)
-      .then((valid) => {
-        setSignFormErrors({
-          ...signFormErrors,
-          [name]: " ",
-        });
-      })
-      .catch((err) => {
-        setSignFormErrors({
-          ...signFormErrors,
-          [name]: err.errors[0],
-        });
-      });
-    setSignFormValues({
-      ...signFormValues,
-      [name]: value,
-    });
-  };
-
-  const submitSign = () => {
-    const newSignUser = {
-      username: signFormValues.username.trim(),
-      phonenumber: signFormValues.phonenumber.trim(),
-      password: signFormValues.password.trim(),
-    };
-    postNewSignUser(newSignUser);
-  };
-
-  useEffect(() => {
-    formschema.isValid(signFormValues).then((valid) => {
-      setSignDisabled(!valid);
-    });
-  }, [signFormValues]);
-
-  const onSubmit = (evt) => {
-    evt.preventDefault();
-    submitSign();
-  };
 
   const onInputChange = (evt) => {
-    const { name, value } = evt.target;
-    inputChange(name, value);
-  };
+    const {name, value} = evt.target
+    inputChange(name, value)
+  }
+  
+   const onSubmit = (evt) => {
+     evt.preventDefault();
+     submit();
+   };
 
   return (
     <SignUpFormStyle>
@@ -237,12 +196,12 @@ export default function SignUpForm(props) {
             type="password"
           />
         </label>
-        <button signDisabled={disabled} submit={submit}>
+        <button disabled={disabled}>
           Submit
         </button>
-        &nbsp;
+    
         <Link to="/loginform">
-          <h2>If you already have an account : LOG IN </h2>
+          <h2>If you already have an account - LOG IN </h2>
         </Link>
       </form>
     </SignUpFormStyle>
