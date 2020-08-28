@@ -89,23 +89,30 @@
 // }
 
 // export default App;
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, PureComponent } from "react";
 import SignUpForm from "./SignUpForm";
 import formschema from "./formSchema";
 import axios from "axios";
 import * as yup from "yup";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useHistory} from "react-router-dom";
 import LogInForm from "./LoginForm";
 import styled from "styled-components";
 import Confirmation from "./Comfirmation"
+// import axiosAth from "./utility/axiosAth";
+
 const HeaderStyle = styled.div`
+  display: flex;
+  flex-direction: column;
   font-family: "Roboto Condensed", sans-serif;
   font-weight: lighter;
-  display: flex;
-  justify-content: center;
+  width: 95%;
+  justify-content:center;
+  align-items: center;
+  margin : 0.5% auto;
   h1 {
-    font-size: 4.5rem;
-
+    color: #1b4332;
+    font-size: 5rem;
+    text-shadow: 3px 3px 8px #b0c4b1;
     font-weight: bolder;
     font-style: italic;
     letter-spacing: 0.6rem;
@@ -113,6 +120,12 @@ const HeaderStyle = styled.div`
 `;
 
 const initialFormValues = {
+  username: "",
+  phonenumber: "",
+  password: "",
+};
+
+const initialLogin = {
   username: "",
   phonenumber: "",
   password: "",
@@ -125,16 +138,22 @@ const initialFormErrors = {
 const initialUsers = [];
 const initialDisabled = true;
 const initialData = {};
+// const history = useHistory()
 
 export default function App() {
+
+  
   const [users, setUsers] = useState(initialUsers);
+  const [login, setLogin] = useState(initialLogin)
   const [formValues, setFormValues] = useState(initialFormValues);
   const [formErrors, setFormErrors] = useState(initialFormErrors);
   const [disabled, setDisabled] = useState(initialDisabled);
   const [datas, setDatas] = useState(initialData);
 
-  const postNewUser = (newUser) => {
-    axios.post("http://localhost:3000/singup", newUser)
+ 
+
+  const postNewLogin = (newUser) => {
+    axios.post("https://cking-watermyplants.herokuapp.com/", newUser)
       .then((res) => {
         setUsers([res.data.data, ...users]);
       })
@@ -145,6 +164,7 @@ export default function App() {
         setFormValues(initialFormValues);
       });
   };
+
 
   const inputChange = (name, value) => {
     yup
@@ -168,13 +188,15 @@ export default function App() {
     });
   };
 
+ 
+
   const submit = () => {
     const newUser = {
       username: formValues.username.trim(),
       phonenumber: formValues.phonenumber.trim(),
       password: formValues.password.trim(),
     };
-    postNewUser(newUser);
+    postNewLogin(newUser);
   };
 
   useEffect(() => {
@@ -194,7 +216,7 @@ export default function App() {
   return (
     <div className="container">
       <HeaderStyle>
-        <h1>Water my plant</h1>
+        <h1>WATER MY PLANT</h1>
       </HeaderStyle>
       <Switch>
         <Route path="/loginform">
