@@ -1,18 +1,11 @@
 import React, { useState } from "react";
-// import axios from "axios";
 import AxiosWithAuth from "./AxiosWithAuth";
-
-// id 	integer 	Yes 	Yes 	Plants id (auto generated)
-// nickname 	string 	Yes 	No 	Plants Nickname
-// species 	string 	Yes 	No 	Plants Species
-// h2oFrequency 	integer 	No 	No 	Plants Water Frequency
-// photo  string 	No 	No 	Plants Picture or Location
 
 const initialPlant = {
   plantid: "",
   nickname: "",
   species: "",
-  h2oFrequency: "",
+  frequency: "",
   photo: "",
 };
 
@@ -28,24 +21,52 @@ const PlantList = ({ plants, updatePlants }) => {
 
   const saveEdit = (e) => {
     e.preventDefault();
-
     AxiosWithAuth()
       .put(
-        `https://cking-watermyplants.herokuapp.com/plants/plants/${plantToEdit.plantid}`,
+        `https://cking-watermyplants.herokuapp.com/plants/${plantToEdit.plantid}`,
         plantToEdit
       )
       .then((res) => {
-        // console.log("SaveEdit res:", res.data);
+        console.log("Plant to edit res:", plantToEdit);
+
         updatePlants(
           plants.map((plant) => {
             if (plant.plantid === plantToEdit.plantid) {
-              return res.data;
+              return plantToEdit;
             } else return plant;
           })
         );
       })
       .catch((err) => console.log("SaveEdit err", err));
   };
+
+  const postNewPlant = (newPlant, userid) => {
+    console.log("Submitted values: ", newPlant);
+    AxiosWithAuth()
+      .post(
+        `https://cking-watermyplants.herokuapp.com/plants/${userid}`,
+        newPlant
+      )
+      .then((res) => {
+        console.log(newPlant.nickname, plantToEdit.nickname);
+        if (newPlant.nickname === "Hibiscus") {
+          return res.data;
+        } else {
+          updatePlants([res.data, ...plantToEdit]);
+        }
+      })
+      .catch((err) => console.log("err POST forms", err));
+  };
+  // postNewPlant(
+  //   {
+  //     plantid: "6",
+  //     nickname: "Hibiscus",
+  //     species: "Roses",
+  //     frequency: "Once per 3 days",
+  //     photo: "Living room floor",
+  //   },
+  //   1
+  // );
 
   const deletePlant = (plant) => {
     AxiosWithAuth()
@@ -65,10 +86,12 @@ const PlantList = ({ plants, updatePlants }) => {
 
   return (
     <div className="plants-wrap">
-      <p>plants</p>
+      <div>
+        <h1>PLANTS</h1>
+      </div>
       <ul>
         {plants.map((plant) => (
-          <li key={plant.plant} onClick={() => editPlant(plant)}>
+          <li key={plant.plantid} onClick={() => editPlant(plant)}>
             <span>
               <span
                 className="delete"
@@ -77,16 +100,21 @@ const PlantList = ({ plants, updatePlants }) => {
                   deletePlant(plant);
                 }}
               >
-                x
-              </span>{" "}
-              {plant.plant}
+                *delete*
+              </span>
+              {"   "}
+              {plant.nickname}
+              <p>Plants Species: {plant.species}</p>
+              <p>Plants Water Frequency: {plant.frequency}</p>
+              <p>Picture or Location: {plant.photo}</p>
+              <p></p>
             </span>
           </li>
         ))}
       </ul>
       {editing && (
         <form onSubmit={saveEdit}>
-          <legend>edit plant</legend>
+          <legend>Edit plant</legend>
           <label>
             Plants Nickname:
             <input
@@ -106,12 +134,12 @@ const PlantList = ({ plants, updatePlants }) => {
             />
           </label>
           <label>
-            Plants Water Frequency:
+            Watering Frequency:
             <input
               onChange={(e) =>
-                setPlantToEdit({ ...plantToEdit, h2oFrequency: e.target.value })
+                setPlantToEdit({ ...plantToEdit, frequency: e.target.value })
               }
-              value={plantToEdit.h2oFrequency}
+              value={plantToEdit.frequency}
             />
           </label>
           <label>
